@@ -1,0 +1,44 @@
+name: ipyml
+
+variables:
+  PYTHONIOENCODING: utf-8
+
+commands:
+  lab:
+    description: start lab
+    unix: jupyter lab --no-browser --debug
+    windows: jupyter lab --no-browser --debug
+    env_spec: develop
+
+env_specs:
+  develop:
+    platforms:
+      - linux-64
+      - osx-64
+      - win-64
+    inherit_from:
+      - ipyml
+    packages:
+      - python
+
+  ipyml:
+    packages:
+      - ipylab
+      - ipython
+      - ipywidgets
+      - jupyterlab >=3.0.0
+      - matplotlib
+      - numpy
+      - pandas
+      - patsy
+      - pip >= 21
+      - pip:
+        - sklearn_export
+      - python >=3.6, <3.7
+      - scikit-learn
+      - statsmodels
+      - traitlets
+
+    channels:
+      - https://conda.anaconda.org/conda-forge
+      - nodefaults

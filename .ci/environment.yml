@@ -1,0 +1,13 @@
+name: base-ipyml
+
+channels:
+  - https://conda.anaconda.org/conda-forge
+  - nodefaults
+
+dependencies:
+  - anaconda-project
+  - conda
+  - doit
+  - pip >= 21
+  - python >=3.6, <3.7
+  - mamba
