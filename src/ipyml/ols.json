@@ -1,0 +1,1 @@
+{"weights": {"Intercept": 147.81137295152445, "age": 5.029567322224089, "sex": 0.470009408925463, "bmi": 57.47853188512019, "bp": 27.26503122039573, "np.sqrt(bp)": -6.101895006250227, "np.square(bmi)": -6.2381623972063895}, "target_column": "target", "formula": "target ~ 1+age+sex+bmi+bp+np.sqrt(bp)+np.square(bmi)"}
