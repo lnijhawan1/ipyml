@@ -1,7 +1,12 @@
 name: ipyml
 
 variables:
-  PYTHONIOENCODING: utf-8
+  PYTHONIOENCODING: UTF-8
+
+platforms:
+  - linux-64
+  - osx-64
+  - win-64
 
 commands:
   lab:
@@ -13,32 +18,32 @@ commands:
 env_specs:
   develop:
     platforms:
-      - linux-64
-      - osx-64
-      - win-64
+    - linux-64
+    - osx-64
+    - win-64
     inherit_from:
-      - ipyml
+    - ipyml
     packages:
-      - python
+    - python
 
   ipyml:
     packages:
-      - ipylab
-      - ipython
-      - ipywidgets
-      - jupyterlab >=3.0.0
-      - matplotlib
-      - numpy
-      - pandas
-      - patsy
-      - pip >= 21
-      - pip:
-        - sklearn_export
-      - python >=3.6, <3.7
-      - scikit-learn
-      - statsmodels
-      - traitlets
+    - ipylab
+    - ipython
+    - ipywidgets
+    - jupyterlab >=3.0.0
+    - matplotlib
+    - numpy
+    - pandas
+    - patsy
+    - pip >= 21
+    - pip:
+      - git+https://github.com/zwelz3/sklearn-export.git@master#egg=sklearn_export
+    - python >=3.9, <3.10
+    - scikit-learn
+    - statsmodels
+    - traitlets
 
     channels:
-      - https://conda.anaconda.org/conda-forge
-      - nodefaults
+    - https://conda.anaconda.org/conda-forge
+    - nodefaults
