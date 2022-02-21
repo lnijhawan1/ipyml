@@ -18,7 +18,7 @@
 - install `anaconda-project` and `doit` into the `base` env
 
 ```bat
-mamba install -c conda-forge anaconda-project doit
+mamba install -c conda-forge anaconda-project=0.8.4 doit=0.32
 ```
 
 or, use the same base environment as CI:
@@ -35,18 +35,17 @@ mamba env update --file .ci/environment.yml
 source ~/mc3/envs/base-ipyml/bin/activate
 ```
 
-## Installing the development environment with `anaconda-project`
+## See What You Can do(it)
 
-```bat
-(base-ipyml) anaconda-project run
+```bash
+doit list --all --status
 ```
 
-This will create the necessary environments to run commands (and start jupyter lab).
+## Get To a Running Lab
 
-## Running lab
-
-```bat
-(base-ipyml) anaconda-project run lab
+```bash
+doit preflight:lab
+doit lab
 ```
 
-This will open lab, where you can run code/examples.
+- open the browser with the URL shown

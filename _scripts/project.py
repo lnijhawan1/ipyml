@@ -31,7 +31,7 @@ SETUP_CFG = ROOT / "setup.cfg"
 # PACKAGE = ROOT / "package.json"
 # YARN_INTEGRITY = NODE_MODULES / ".yarn-integrity"
 # YARN_LOCK = ROOT / "yarn.lock"
-# CI = ROOT / ".github"
+CI = ROOT / ".github"
 DODO = ROOT / "dodo.py"
 BUILD = ROOT / "build"
 # DIST = ROOT / "dist"
@@ -40,7 +40,7 @@ PROJ = ROOT / "anaconda-project.yml"
 #PROJ_LOCK = ROOT / "anaconda-project-lock.yml"
 VENDOR = ROOT / "vendor"
 CHANGELOG = ROOT / "CHANGELOG.md"
-# CONDARC = CI / ".condarc"
+CONDARC = CI / ".condarc"
 
 # tools
 PY = ["python"]
@@ -66,7 +66,7 @@ FORCE_SERIAL_ENV_PREP = bool(
 )
 
 # python stuff
-PY_SRC = ROOT / "src" / "ipyradiant"
+PY_SRC = ROOT / "src" / "ipyml"
 VERSION_PY = PY_SRC / "_version.py"
 
 # lab stuff
@@ -125,8 +125,8 @@ OK_PRETTIER = BUILD / "prettier.ok"
 PY_VERSION = re.findall(r'''__version__ = "(.*)"''', VERSION_PY.read_text())[0]
 
 # built artifacts
-# SDIST = DIST / f"ipyradiant-{PY_VERSION}.tar.gz"
-# WHEEL = DIST / f"ipyradiant-{PY_VERSION}-py3-none-any.whl"
+# SDIST = DIST / f"ipyml-{PY_VERSION}.tar.gz"
+# WHEEL = DIST / f"ipyml-{PY_VERSION}-py3-none-any.whl"
 # HASH_DEPS = [SDIST, WHEEL]
 # SHA256SUMS = DIST / "SHA256SUMS"
 EXAMPLE_HTML = [BUILD_NBHTML / p.name.replace(".ipynb", ".html") for p in EXAMPLE_IPYNB]

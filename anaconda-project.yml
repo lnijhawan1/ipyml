@@ -24,7 +24,7 @@ env_specs:
     inherit_from:
     - ipyml
     packages:
-    - python
+    - python >=3.9,<3.10
 
   ipyml:
     packages:
@@ -39,7 +39,7 @@ env_specs:
     - pip >= 21
     - pip:
       - git+https://github.com/zwelz3/sklearn-export.git@master#egg=sklearn_export
-    - python >=3.9, <3.10
+    - python >=3.9,<3.10
     - scikit-learn
     - statsmodels
     - traitlets
@@ -47,3 +47,4 @@ env_specs:
     channels:
     - https://conda.anaconda.org/conda-forge
     - nodefaults
+ 

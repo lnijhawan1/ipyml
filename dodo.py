@@ -38,7 +38,7 @@ PROJ = safe_load(P.PROJ.read_text(encoding="utf-8"))
 
 def task_preflight():
     """ensure a sane development environment"""
-    file_dep = [P.PROJ_LOCK, P.SCRIPTS / "preflight.py"]
+    file_dep = [P.PROJ, P.SCRIPTS / "preflight.py"]  # P.PROJ_LOCK inistead of P.PROJ GH#3
 
     yield _ok(
         dict(
@@ -68,7 +68,7 @@ def task_env():
     """prepare project envs"""
     envs = ["develop",]
     for i, env in enumerate(envs):
-        file_dep = [P.PROJ_LOCK, P.OK_PREFLIGHT_CONDA]
+        file_dep = [P.PROJ, P.OK_PREFLIGHT_CONDA]  # P.PROJ_LOCK instead of P.PROJ GH#3
         if P.FORCE_SERIAL_ENV_PREP and i:
             file_dep += [P.OK_ENV[envs[i - 1]]]
         yield _ok(
@@ -100,17 +100,17 @@ def task_setup():
 
     _install = ["--no-deps", "--ignore-installed", "-vv"]
 
-    if P.INSTALL_ARTIFACT == "wheel":
-        _install += [P.WHEEL]
-    elif P.INSTALL_ARTIFACT == "sdist":
-        _install += [P.SDIST]
-    else:
-        _install += ["-e", "."]
+    # if P.INSTALL_ARTIFACT == "wheel":
+    #     _install += [P.WHEEL]
+    # elif P.INSTALL_ARTIFACT == "sdist":
+    #     _install += [P.SDIST]
+    # else:
+    _install += ["-e", "."]
 
     yield _ok(
         dict(
             name="py",
-            file_dep=[P.SETUP_PY, P.SETUP_CFG, P.OK_ENV["develop"], P.WHEEL, P.SDIST],
+            file_dep=[P.SETUP_PY, P.SETUP_CFG, P.OK_ENV["develop"]],  # P.WHEEL, P.SDIST once release is added
             uptodate=[config_changed({"artifact": P.INSTALL_ARTIFACT})],
             actions=[
                 [*P.APR_DEV, *P.PIP, "install", *_install],
@@ -121,44 +121,44 @@ def task_setup():
     )
 
 
-def task_build():
-    """build packages"""
-    yield dict(
-        name="py",
-        file_dep=[
-            *P.ALL_PY_SRC,
-            P.SETUP_CFG,
-            P.SETUP_PY,
-            P.OK_BLACK,
-            P.OK_ENV["build"],
-        ],
-        actions=[
-            [*P.APR_BUILD, *P.PY, "setup.py", "sdist"],
-            [*P.APR_BUILD, *P.PY, "setup.py", "bdist_wheel"],
-        ],
-        targets=[P.WHEEL, P.SDIST],
-    )
+# def task_build():
+#     """build packages"""
+#     yield dict(
+#         name="py",
+#         file_dep=[
+#             *P.ALL_PY_SRC,
+#             P.SETUP_CFG,
+#             P.SETUP_PY,
+#             P.OK_BLACK,
+#             P.OK_ENV["build"],
+#         ],
+#         actions=[
+#             [*P.APR_BUILD, *P.PY, "setup.py", "sdist"],
+#             [*P.APR_BUILD, *P.PY, "setup.py", "bdist_wheel"],
+#         ],
+#         targets=[P.WHEEL, P.SDIST],
+#     )
 
-    def _run_hash():
-        # mimic sha256sum CLI
-        if P.SHA256SUMS.exists():
-            P.SHA256SUMS.unlink()
+#     def _run_hash():
+#         # mimic sha256sum CLI
+#         if P.SHA256SUMS.exists():
+#             P.SHA256SUMS.unlink()
 
-        lines = []
+#         lines = []
 
-        for p in P.HASH_DEPS:
-            lines += ["  ".join([sha256(p.read_bytes()).hexdigest(), p.name])]
+#         for p in P.HASH_DEPS:
+#             lines += ["  ".join([sha256(p.read_bytes()).hexdigest(), p.name])]
 
-        output = "\n".join(lines)
-        print(output)
-        P.SHA256SUMS.write_text(output)
+#         output = "\n".join(lines)
+#         print(output)
+#         P.SHA256SUMS.write_text(output)
 
-    yield dict(
-        name="hash",
-        file_dep=P.HASH_DEPS,
-        targets=[P.SHA256SUMS],
-        actions=[_run_hash],
-    )
+#     yield dict(
+#         name="hash",
+#         file_dep=P.HASH_DEPS,
+#         targets=[P.SHA256SUMS],
+#         actions=[_run_hash],
+#     )
 
 
 def task_test():
@@ -226,84 +226,87 @@ def task_test():
     )
 
 
-def task_lint():
-    """format all source files"""
+# def task_lint():
+#     """format all source files"""
 
-    yield _ok(
-        dict(
-            name="black",
-            file_dep=[*P.ALL_PY, P.OK_ENV["qa"]],
-            actions=[
-                [*P.APR_QA, "isort", *P.ALL_PY],
-                [*P.APR_QA, "black", "--quiet", *P.ALL_PY],
-            ],
-        ),
-        P.OK_BLACK,
-    )
-    yield _ok(
-        dict(
-            name="flake8",
-            file_dep=[*P.ALL_PY, P.OK_BLACK],
-            actions=[[*P.APR_QA, "flake8", *P.ALL_PY]],
-        ),
-        P.OK_FLAKE8,
-    )
-    yield _ok(
-        dict(
-            name="pyflakes",
-            file_dep=[*P.ALL_PY, P.OK_BLACK],
-            actions=[[*P.APR_QA, "pyflakes", *P.ALL_PY]],
-        ),
-        P.OK_PYFLAKES,
-    )
-    yield _ok(
-        dict(
-            name="prettier",
-            file_dep=[P.YARN_INTEGRITY, *P.ALL_PRETTIER, P.OK_ENV["qa"]],
-            actions=[[*P.APR_QA, *P.JLPM, "--silent", "lint"]],
-        ),
-        P.OK_PRETTIER,
-    )
+#     yield _ok(
+#         dict(
+#             name="black",
+#             file_dep=[*P.ALL_PY, P.OK_ENV["qa"]],
+#             actions=[
+#                 [*P.APR_QA, "isort", *P.ALL_PY],
+#                 [*P.APR_QA, "black", "--quiet", *P.ALL_PY],
+#             ],
+#         ),
+#         P.OK_BLACK,
+#     )
+#     yield _ok(
+#         dict(
+#             name="flake8",
+#             file_dep=[*P.ALL_PY, P.OK_BLACK],
+#             actions=[[*P.APR_QA, "flake8", *P.ALL_PY]],
+#         ),
+#         P.OK_FLAKE8,
+#     )
+#     yield _ok(
+#         dict(
+#             name="pyflakes",
+#             file_dep=[*P.ALL_PY, P.OK_BLACK],
+#             actions=[[*P.APR_QA, "pyflakes", *P.ALL_PY]],
+#         ),
+#         P.OK_PYFLAKES,
+#     )
+#     yield _ok(
+#         dict(
+#             name="prettier",
+#             file_dep=[P.YARN_INTEGRITY, *P.ALL_PRETTIER, P.OK_ENV["qa"]],
+#             actions=[[*P.APR_QA, *P.JLPM, "--silent", "lint"]],
+#         ),
+#         P.OK_PRETTIER,
+#     )
 
-    def _nblint(nb, nb_ok):
-        return _ok(
-            dict(
-                name=f"""nblint:{nb.stem}""",
-                file_dep=[P.YARN_INTEGRITY, P.OK_ENV["qa"], nb],
-                actions=[
-                    LongRunning([*P.APR_QA, *P.PYM, "_scripts.nblint", nb], shell=False)
-                ],
-            ),
-            nb_ok,
-        )
+#     def _nblint(nb, nb_ok):
+#         return _ok(
+#             dict(
+#                 name=f"""nblint:{nb.stem}""",
+#                 file_dep=[P.YARN_INTEGRITY, P.OK_ENV["qa"], nb],
+#                 actions=[
+#                     LongRunning([*P.APR_QA, *P.PYM, "_scripts.nblint", nb], shell=False)
+#                 ],
+#             ),
+#             nb_ok,
+#         )
 
-    all_nb_lint_ok = {nb: P.OK_NBLINT / nb.stem for nb in P.EXAMPLE_IPYNB}
+#     all_nb_lint_ok = {nb: P.OK_NBLINT / nb.stem for nb in P.EXAMPLE_IPYNB}
 
-    for nb, nb_ok in all_nb_lint_ok.items():
-        yield _nblint(nb, nb_ok)
+#     for nb, nb_ok in all_nb_lint_ok.items():
+#         yield _nblint(nb, nb_ok)
 
-    yield _ok(
-        dict(
-            name="all",
-            actions=[_echo_ok("all ok")],
-            file_dep=[
-                P.OK_BLACK,
-                P.OK_FLAKE8,
-                P.OK_PRETTIER,
-                P.OK_PYFLAKES,
-                *all_nb_lint_ok.values(),
-            ],
-        ),
-        P.OK_LINT,
-    )
+#     yield _ok(
+#         dict(
+#             name="all",
+#             actions=[_echo_ok("all ok")],
+#             file_dep=[
+#                 P.OK_BLACK,
+#                 P.OK_FLAKE8,
+#                 P.OK_PRETTIER,
+#                 P.OK_PYFLAKES,
+#                 *all_nb_lint_ok.values(),
+#             ],
+#         ),
+#         P.OK_LINT,
+#     )
 
 
 def task_lab():
-    """run JupyterLab "normally" (not watching sources)"""
+    """run JupyterLab "normally" (not watching sources)
+    
+    TODO add lab env spec
+    """
 
     def lab():
         proc = subprocess.Popen(
-            list(map(str, [*P.APR_DEV, "lab"])), stdin=subprocess.PIPE
+            list(map(str, [*P.APR_DEV,])), stdin=subprocess.PIPE
         )
 
         try:

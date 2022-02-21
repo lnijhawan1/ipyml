@@ -140,33 +140,33 @@ def preflight_lab():
     return 0
 
 
-def preflight_release():
-    problems = []
-    changelog = P.CHANGELOG.read_text(encoding="utf-8")
+# def preflight_release():
+#     problems = []
+#     changelog = P.CHANGELOG.read_text(encoding="utf-8")
 
-    print("Checking CHANGELOG...", flush=True)
-    changelog_versions = [
-        f"## {P.PY_VERSION}",
-    ]
+#     print("Checking CHANGELOG...", flush=True)
+#     changelog_versions = [
+#         f"## {P.PY_VERSION}",
+#     ]
 
-    for version in changelog_versions:
-        if version not in changelog:
-            problems += [f"- Not found in CHANGELOG.md: {version}"]
+#     for version in changelog_versions:
+#         if version not in changelog:
+#             problems += [f"- Not found in CHANGELOG.md: {version}"]
 
-    print("Checking copyright/license headers...")
-    for any_src in [*P.ALL_PY]:
-        any_text = any_src.read_text()
-        if COPYRIGHT not in any_text:
-            problems += [f"{any_src.relative_to(P.ROOT)} missing copyright info"]
-        if LICENSE not in any_text:
-            problems += [f"{any_src.relative_to(P.ROOT)} missing license info"]
+#     print("Checking copyright/license headers...")
+#     for any_src in [*P.ALL_PY]:
+#         any_text = any_src.read_text()
+#         if COPYRIGHT not in any_text:
+#             problems += [f"{any_src.relative_to(P.ROOT)} missing copyright info"]
+#         if LICENSE not in any_text:
+#             problems += [f"{any_src.relative_to(P.ROOT)} missing license info"]
 
-    print(len(problems), "problem(s) found")
+#     print(len(problems), "problem(s) found")
 
-    if problems:
-        [print(problem) for problem in problems]
+#     if problems:
+#         [print(problem) for problem in problems]
 
-    return len(problems)
+#     return len(problems)
 
 
 def preflight(stage):
@@ -176,8 +176,8 @@ def preflight(stage):
         return preflight_kernel()
     elif stage == "lab":
         return preflight_lab()
-    elif stage == "release":
-        return preflight_release()
+    # elif stage == "release":
+    #     return preflight_release()
 
     print(f"Don't know how to preflight: {stage}")
     return 1

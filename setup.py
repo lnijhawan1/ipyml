@@ -13,4 +13,4 @@ if __name__ == "__main__":
             r"""__version__ = "([^"]+)"$""",
             (Path(__file__).parent / "src" / "ipyml" / "_version.py").read_text(),
         )[0],
-    )
+    ) 
