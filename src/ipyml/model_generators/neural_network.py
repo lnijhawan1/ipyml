@@ -1,13 +1,15 @@
+import traitlets as trt
+import ipywidgets as ipyw
+
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.neural_network import MLPRegressor
 from ipylab import JupyterFrontEnd, Panel
 
-import traitlets as trt
-import ipywidgets as ipyw
-from utils import TrainedModel, HiddenLayers
-from analysis_export import FinalModel
 from .model_generator import ModelGenerator
+from ..utils import TrainedModel, HiddenLayers
+from ..analysis_export import FinalModel
+
 
 class NeuralNetwork(ModelGenerator):
     hidden_layers: HiddenLayers = trt.Instance(HiddenLayers, args=())

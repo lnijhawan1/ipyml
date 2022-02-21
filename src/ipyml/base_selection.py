@@ -1,10 +1,12 @@
 import ipywidgets as ipyw
 import pandas as pd
 import traitlets as trt
+
 from IPython.display import display
 from ipylab import JupyterFrontEnd, Panel
-from utils import RegressionConfiguration
-from model_generators import NeuralNetwork, SKLinearRegression, SMOLS
+
+from .utils import RegressionConfiguration
+from .model_generators import NeuralNetwork, SKLinearRegression, SMOLS
 
 
 class RegressionBase(ipyw.VBox):   

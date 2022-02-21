@@ -2,15 +2,16 @@ import ipywidgets as ipyw
 import traitlets as trt
 import pandas as pd
 import numpy as np
+import statsmodels.formula.api as sm
+
 from ipylab import JupyterFrontEnd, Panel
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-import statsmodels.formula.api as sm
 
-from utils import TrainedModel
-from analysis_export import FinalModel
 from .model_generator import ModelGenerator
+from ..utils import TrainedModel
+from ..analysis_export import FinalModel
 
 
 class SKLinearRegression(ModelGenerator):
