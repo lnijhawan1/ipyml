@@ -41,12 +41,12 @@ source ~/mc3/envs/base-ipyml/bin/activate
 (base-ipyml) anaconda-project run
 ```
 
-This will create the necessary environments to run commands.
+This will create the necessary environments to run commands (and start jupyter lab).
 
 ## Running lab
 
 ```bat
-(base-ipyml) jupyter lab
+(base-ipyml) anaconda-project run lab
 ```
 
 This will open lab, where you can run code/examples.
