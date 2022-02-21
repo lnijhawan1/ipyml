@@ -70,11 +70,11 @@ PY_SRC = ROOT / "src" / "ipyml"
 VERSION_PY = PY_SRC / "_version.py"
 
 # lab stuff
-LAB_APP_DIR = ENVS / "develop/share/jupyter/lab"
+# LAB_APP_DIR = ENVS / "develop/share/jupyter/lab"
 # LAB_STAGING = LAB_APP_DIR / "staging"
 # LAB_LOCK = LAB_STAGING / "yarn.lock"
-LAB_STATIC = LAB_APP_DIR / "static"
-LAB_INDEX = LAB_STATIC / "index.html"
+# LAB_STATIC = LAB_APP_DIR / "static"
+# LAB_INDEX = LAB_STATIC / "index.html"
 
 
 def _not_checkpoint(paths):

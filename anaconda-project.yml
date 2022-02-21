@@ -17,16 +17,9 @@ commands:
 
 env_specs:
   develop:
-    platforms:
-    - linux-64
-    - osx-64
-    - win-64
-    inherit_from:
-    - ipyml
-    packages:
-    - python >=3.9,<3.10
-
-  ipyml:
+    channels:
+    - https://conda.anaconda.org/conda-forge
+    - nodefaults
     packages:
     - ipylab
     - ipython
@@ -44,7 +37,4 @@ env_specs:
     - statsmodels
     - traitlets
 
-    channels:
-    - https://conda.anaconda.org/conda-forge
-    - nodefaults
  
