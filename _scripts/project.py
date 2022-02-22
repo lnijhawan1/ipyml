@@ -37,7 +37,7 @@ BUILD = ROOT / "build"
 # DIST = ROOT / "dist"
 ENVS = ROOT / "envs"
 PROJ = ROOT / "anaconda-project.yml"
-#PROJ_LOCK = ROOT / "anaconda-project-lock.yml"
+# PROJ_LOCK = ROOT / "anaconda-project-lock.yml"
 VENDOR = ROOT / "vendor"
 CHANGELOG = ROOT / "CHANGELOG.md"
 CONDARC = CI / ".condarc"
@@ -49,8 +49,8 @@ PIP = [*PYM, "pip"]
 PREFLIGHT = [*PYM, "_scripts.preflight"]
 
 
-# JLPM = ["jlpm"]
-# JLPM_INSTALL = [*JLPM, "--ignore-optional", "--prefer-offline"]
+JLPM = ["jlpm"]
+JLPM_INSTALL = [*JLPM, "--ignore-optional", "--prefer-offline"]
 # LAB_EXT = ["jupyter", "labextension"]
 # CONDA_BUILD = ["conda-build"]
 LAB = ["jupyter", "lab"]
@@ -58,9 +58,16 @@ AP = ["anaconda-project"]
 AP_PREP = [*AP, "prepare", "--env-spec"]
 APR = [*AP, "run", "--env-spec"]
 APR_DEV = [*APR, "develop"]
+APR_QA = [*APR, "qa"]
 
 # env stuff
-OK_ENV = {env: BUILD / f"prep_{env}.ok" for env in ["develop",]}
+OK_ENV = {
+    env: BUILD / f"prep_{env}.ok"
+    for env in [
+        "develop",
+        "qa",
+    ]
+}
 FORCE_SERIAL_ENV_PREP = bool(
     json.loads(os.environ.get("FORCE_SERIAL_ENV_PREP", "true"))
 )
@@ -98,7 +105,9 @@ BUILD_NBHTML = BUILD / "nbsmoke"
 # mostly linting
 ALL_PY_SRC = [*PY_SRC.rglob("*.py")]
 ALL_PY = [DODO, *ALL_PY_SRC, *EXAMPLE_PY, *SCRIPTS.rglob("*.py")]
-ALL_YML = [*ROOT.glob("*.yml"),]  # *CI.rglob("*.yml")]
+ALL_YML = [
+    *ROOT.glob("*.yml"),
+]  # *CI.rglob("*.yml")]
 ALL_JSON = [*ROOT.glob("*.json")]
 ALL_MD = [*ROOT.glob("*.md"), *EXAMPLE_DATA.glob("*.md")]
 ALL_PRETTIER = [*ALL_YML, *ALL_JSON, *ALL_MD]

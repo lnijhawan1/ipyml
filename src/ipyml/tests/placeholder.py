@@ -1,14 +1,14 @@
-from msilib.schema import Error
-from tkinter import E
-
-
 try:
-    from ipyml import RegressionBase  # noqa
+
     ERROR = False
-except ImportError as ERROR:
-    pass
+except ImportError as err:
+    ERROR = err
 
 
 def test_import_regression_base():
-    if ERROR:
-        raise ERROR
+    try:
+        from ipyml import RegressionBase
+
+        print(RegressionBase)
+    except ImportError as err:
+        raise err

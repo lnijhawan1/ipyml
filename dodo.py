@@ -8,7 +8,6 @@
 import os
 import shutil
 import subprocess
-from hashlib import sha256
 
 from doit.action import CmdAction
 from doit.tools import LongRunning, PythonInteractiveAction, config_changed
@@ -16,6 +15,9 @@ from yaml import safe_load
 
 import _scripts.project as P
 import _scripts.utils as U
+
+# from hashlib import sha256
+
 
 os.environ.update(
     CONDA_EXE="mamba",
@@ -38,7 +40,10 @@ PROJ = safe_load(P.PROJ.read_text(encoding="utf-8"))
 
 def task_preflight():
     """ensure a sane development environment"""
-    file_dep = [P.PROJ, P.SCRIPTS / "preflight.py"]  # P.PROJ_LOCK inistead of P.PROJ GH#3
+    file_dep = [
+        P.PROJ,
+        P.SCRIPTS / "preflight.py",
+    ]  # P.PROJ_LOCK inistead of P.PROJ GH#3
 
     yield _ok(
         dict(
@@ -75,7 +80,10 @@ def task_preflight():
 
 def task_env():
     """prepare project envs"""
-    envs = ["develop",]
+    envs = [
+        "develop",
+        "qa",
+    ]
     for i, env in enumerate(envs):
         file_dep = [P.PROJ, P.OK_PREFLIGHT_CONDA]  # P.PROJ_LOCK instead of P.PROJ GH#3
         if P.FORCE_SERIAL_ENV_PREP and i:
@@ -119,7 +127,11 @@ def task_setup():
     yield _ok(
         dict(
             name="py",
-            file_dep=[P.SETUP_PY, P.SETUP_CFG, P.OK_ENV["develop"]],  # P.WHEEL, P.SDIST once release is added
+            file_dep=[
+                P.SETUP_PY,
+                P.SETUP_CFG,
+                P.OK_ENV["develop"],
+            ],  # P.WHEEL, P.SDIST once release is added
             uptodate=[config_changed({"artifact": P.INSTALL_ARTIFACT})],
             actions=[
                 [*P.APR_DEV, *P.PIP, "install", *_install],
@@ -268,7 +280,7 @@ def task_lint():
     yield _ok(
         dict(
             name="prettier",
-            file_dep=[P.YARN_INTEGRITY, *P.ALL_PRETTIER, P.OK_ENV["qa"]],
+            file_dep=[*P.ALL_PRETTIER, P.OK_ENV["qa"]],  # TODO Add P.YARN_INTEGRITY
             actions=[[*P.APR_QA, *P.JLPM, "--silent", "lint"]],
         ),
         P.OK_PRETTIER,
@@ -278,7 +290,7 @@ def task_lint():
         return _ok(
             dict(
                 name=f"""nblint:{nb.stem}""",
-                file_dep=[P.YARN_INTEGRITY, P.OK_ENV["qa"], nb],
+                file_dep=[P.OK_ENV["qa"], nb],  # TODO Add P.YARN_INTEGRITY
                 actions=[
                     LongRunning([*P.APR_QA, *P.PYM, "_scripts.nblint", nb], shell=False)
                 ],
@@ -309,13 +321,21 @@ def task_lint():
 
 def task_lab():
     """run JupyterLab "normally" (not watching sources)
-    
+
     TODO add lab env spec
     """
 
     def lab():
         proc = subprocess.Popen(
-            list(map(str, [*P.APR_DEV,])), stdin=subprocess.PIPE
+            list(
+                map(
+                    str,
+                    [
+                        *P.APR_DEV,
+                    ],
+                )
+            ),
+            stdin=subprocess.PIPE,
         )
 
         try:

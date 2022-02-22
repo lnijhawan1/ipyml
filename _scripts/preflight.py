@@ -8,16 +8,15 @@ import os
 import re
 import subprocess
 import sys
-from datetime import datetime
+
+# from datetime import datetime
 from pathlib import Path
 from pprint import pprint
 
 from . import project as P
 
 BAD_PATH_RE = r"[^a-zA-Z\d_\-\.\\/]"
-ROOT_RECOMMEND = (
-    "c:\\git\\ipyml" if P.WIN else os.path.expanduser("~/git/ipyml")
-)
+ROOT_RECOMMEND = "c:\\git\\ipyml" if P.WIN else os.path.expanduser("~/git/ipyml")
 MC3_RECOMMEND = "c:\\mc3" if P.WIN else os.path.expanduser("~/mc3")
 ARBITRARY_PATH_LENGTH = 32 if P.WIN else 64
 NOT_DEFINED = "!NOT DEFINED!"
