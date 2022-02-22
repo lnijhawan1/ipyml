@@ -56,6 +56,15 @@ def task_preflight():
 
     yield _ok(
         dict(
+            name="kernel",
+            file_dep=[*file_dep, P.OK_ENV["develop"]],
+            actions=[[*P.APR_DEV, *P.PREFLIGHT, "kernel"]],
+        ),
+        P.OK_PREFLIGHT_KERNEL,
+    )
+
+    yield _ok(
+        dict(
             name="lab",
             file_dep=[*file_dep, P.OK_ENV["develop"]],
             actions=[[*P.APR_DEV, *P.PREFLIGHT, "lab"]],
@@ -171,33 +180,33 @@ def task_test():
         *P.ALL_PY_SRC,
     ]
 
-    # def _nb_test(nb):
-    #     def _test():
-    #         env = dict(os.environ)
-    #         env.update(IPYML_TESTING="true")
-    #         args = [
-    #             *P.APR_DEV,
-    #             "jupyter",
-    #             "nbconvert",
-    #             "--to",
-    #             "html",
-    #             "--output-dir",
-    #             P.BUILD_NBHTML,
-    #             "--execute",
-    #             "--ExecutePreprocessor.timeout=1200",
-    #             nb,
-    #         ]
-    #         return CmdAction(args, env=env, shell=False)
+    def _nb_test(nb):
+        def _test():
+            env = dict(os.environ)
+            # env.update(IPYML_TESTING="true") Only needed if automating notebook execution
+            args = [
+                *P.APR_DEV,
+                "jupyter",
+                "nbconvert",
+                "--to",
+                "html",
+                "--output-dir",
+                P.BUILD_NBHTML,
+                "--execute",
+                "--ExecutePreprocessor.timeout=1200",
+                nb,
+            ]
+            return CmdAction(args, env=env, shell=False)
 
-    #     return dict(
-    #         name=f"nb:{nb.name}".replace(" ", "_").replace(".ipynb", ""),
-    #         file_dep=[*P.EXAMPLE_IPYNB, *test_deps],
-    #         actions=[_test()],
-    #         targets=[P.BUILD_NBHTML / nb.name.replace(".ipynb", ".html")],
-    #     )
+        return dict(
+            name=f"nb:{nb.name}".replace(" ", "_").replace(".ipynb", ""),
+            file_dep=[*P.EXAMPLE_IPYNB, *test_deps],
+            actions=[_test()],
+            targets=[P.BUILD_NBHTML / nb.name.replace(".ipynb", ".html")],
+        )
 
-    # for nb in P.EXAMPLE_IPYNB:
-    #     yield _nb_test(nb)
+    for nb in P.EXAMPLE_IPYNB:
+        yield _nb_test(nb)
 
     yield dict(
         name="pytest",
@@ -226,76 +235,76 @@ def task_test():
     )
 
 
-# def task_lint():
-#     """format all source files"""
+def task_lint():
+    """format all source files"""
 
-#     yield _ok(
-#         dict(
-#             name="black",
-#             file_dep=[*P.ALL_PY, P.OK_ENV["qa"]],
-#             actions=[
-#                 [*P.APR_QA, "isort", *P.ALL_PY],
-#                 [*P.APR_QA, "black", "--quiet", *P.ALL_PY],
-#             ],
-#         ),
-#         P.OK_BLACK,
-#     )
-#     yield _ok(
-#         dict(
-#             name="flake8",
-#             file_dep=[*P.ALL_PY, P.OK_BLACK],
-#             actions=[[*P.APR_QA, "flake8", *P.ALL_PY]],
-#         ),
-#         P.OK_FLAKE8,
-#     )
-#     yield _ok(
-#         dict(
-#             name="pyflakes",
-#             file_dep=[*P.ALL_PY, P.OK_BLACK],
-#             actions=[[*P.APR_QA, "pyflakes", *P.ALL_PY]],
-#         ),
-#         P.OK_PYFLAKES,
-#     )
-#     yield _ok(
-#         dict(
-#             name="prettier",
-#             file_dep=[P.YARN_INTEGRITY, *P.ALL_PRETTIER, P.OK_ENV["qa"]],
-#             actions=[[*P.APR_QA, *P.JLPM, "--silent", "lint"]],
-#         ),
-#         P.OK_PRETTIER,
-#     )
+    yield _ok(
+        dict(
+            name="black",
+            file_dep=[*P.ALL_PY, P.OK_ENV["qa"]],
+            actions=[
+                [*P.APR_QA, "isort", *P.ALL_PY],
+                [*P.APR_QA, "black", "--quiet", *P.ALL_PY],
+            ],
+        ),
+        P.OK_BLACK,
+    )
+    yield _ok(
+        dict(
+            name="flake8",
+            file_dep=[*P.ALL_PY, P.OK_BLACK],
+            actions=[[*P.APR_QA, "flake8", *P.ALL_PY]],
+        ),
+        P.OK_FLAKE8,
+    )
+    yield _ok(
+        dict(
+            name="pyflakes",
+            file_dep=[*P.ALL_PY, P.OK_BLACK],
+            actions=[[*P.APR_QA, "pyflakes", *P.ALL_PY]],
+        ),
+        P.OK_PYFLAKES,
+    )
+    yield _ok(
+        dict(
+            name="prettier",
+            file_dep=[P.YARN_INTEGRITY, *P.ALL_PRETTIER, P.OK_ENV["qa"]],
+            actions=[[*P.APR_QA, *P.JLPM, "--silent", "lint"]],
+        ),
+        P.OK_PRETTIER,
+    )
 
-#     def _nblint(nb, nb_ok):
-#         return _ok(
-#             dict(
-#                 name=f"""nblint:{nb.stem}""",
-#                 file_dep=[P.YARN_INTEGRITY, P.OK_ENV["qa"], nb],
-#                 actions=[
-#                     LongRunning([*P.APR_QA, *P.PYM, "_scripts.nblint", nb], shell=False)
-#                 ],
-#             ),
-#             nb_ok,
-#         )
+    def _nblint(nb, nb_ok):
+        return _ok(
+            dict(
+                name=f"""nblint:{nb.stem}""",
+                file_dep=[P.YARN_INTEGRITY, P.OK_ENV["qa"], nb],
+                actions=[
+                    LongRunning([*P.APR_QA, *P.PYM, "_scripts.nblint", nb], shell=False)
+                ],
+            ),
+            nb_ok,
+        )
 
-#     all_nb_lint_ok = {nb: P.OK_NBLINT / nb.stem for nb in P.EXAMPLE_IPYNB}
+    all_nb_lint_ok = {nb: P.OK_NBLINT / nb.stem for nb in P.EXAMPLE_IPYNB}
 
-#     for nb, nb_ok in all_nb_lint_ok.items():
-#         yield _nblint(nb, nb_ok)
+    for nb, nb_ok in all_nb_lint_ok.items():
+        yield _nblint(nb, nb_ok)
 
-#     yield _ok(
-#         dict(
-#             name="all",
-#             actions=[_echo_ok("all ok")],
-#             file_dep=[
-#                 P.OK_BLACK,
-#                 P.OK_FLAKE8,
-#                 P.OK_PRETTIER,
-#                 P.OK_PYFLAKES,
-#                 *all_nb_lint_ok.values(),
-#             ],
-#         ),
-#         P.OK_LINT,
-#     )
+    yield _ok(
+        dict(
+            name="all",
+            actions=[_echo_ok("all ok")],
+            file_dep=[
+                P.OK_BLACK,
+                P.OK_FLAKE8,
+                P.OK_PRETTIER,
+                P.OK_PYFLAKES,
+                *all_nb_lint_ok.values(),
+            ],
+        ),
+        P.OK_LINT,
+    )
 
 
 def task_lab():
@@ -326,12 +335,12 @@ def task_lab():
     )
 
 
-def task_all():
-    """do everything except start lab"""
-    return dict(
-        file_dep=[P.OK_RELEASE, P.OK_PREFLIGHT_LAB],
-        actions=([_echo_ok("ALL GOOD")]),
-    )
+# def task_all():
+#     """do everything except start lab"""
+#     return dict(
+#         file_dep=[P.OK_RELEASE, P.OK_PREFLIGHT_LAB],
+#         actions=([_echo_ok("ALL GOOD")]),
+#     )
 
 
 def _echo_ok(msg):

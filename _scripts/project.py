@@ -85,7 +85,7 @@ def _not_checkpoint(paths):
 
 
 # tests
-EXAMPLES = ROOT / "examples"
+EXAMPLES = ROOT / "notebooks"
 EXAMPLE_DATA = EXAMPLES / "data"
 EXAMPLE_DATASETS = [
     p for p in _not_checkpoint(EXAMPLE_DATA.glob("*")) if not p.name.endswith("*.md")
