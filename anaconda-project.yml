@@ -15,12 +15,6 @@ commands:
     windows: jupyter lab --no-browser --debug
     env_spec: develop
 
-  test:pytest:
-    description: test ipyml package
-    windows: cd src\ipyml && pytest -ra
-    unix: cd src/ipyml && pytest -ra
-    env_spec: develop
-
 env_specs:
   develop:
     channels:

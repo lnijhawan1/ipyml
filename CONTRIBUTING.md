@@ -49,3 +49,10 @@ doit lab
 ```
 
 - open the browser with the URL shown
+
+## Lint and Test
+
+```bash
+doit lint
+doit test
+```

@@ -8,8 +8,7 @@ import os
 import re
 import subprocess
 import sys
-
-# from datetime import datetime
+from datetime import datetime
 from pathlib import Path
 from pprint import pprint
 
@@ -22,8 +21,8 @@ ARBITRARY_PATH_LENGTH = 32 if P.WIN else 64
 NOT_DEFINED = "!NOT DEFINED!"
 DEFAULT_KERNEL_NAME = "python3"
 
-# COPYRIGHT = f"Copyright (c) {datetime.now().year} ipyml contributors."
-# LICENSE = "Distributed under the terms of the Modified BSD License."
+COPYRIGHT = f"Copyright (c) {datetime.now().year} ipyml contributors."
+LICENSE = "Distributed under the terms of the Modified BSD License."
 
 
 def check_path(path, name=None, message=None, check_len=False):
