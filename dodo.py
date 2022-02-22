@@ -362,5 +362,5 @@ def _call(args, **kwargs):
     return subprocess.call(args, **kwargs)
 
 
-def _channel_args(env="ipyradiant"):
+def _channel_args(env="ipyml"):
     return sum([["-c", c] for c in PROJ["env_specs"][env]["channels"]], [])
