@@ -1,5 +1,5 @@
-from utils import TrainedModel, RegressionConfiguration
-from analysis_export import FinalModel
+from ..utils import TrainedModel, RegressionConfiguration
+from ..analysis_export import FinalModel
 import ipywidgets as ipyw
 import traitlets as trt
 from sklearn.model_selection import train_test_split

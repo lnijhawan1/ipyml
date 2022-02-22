@@ -4,7 +4,7 @@ import json
 import pandas as pd
 from sklearn_export import Export
 
-from utils import TrainedModel
+from .utils import TrainedModel
 
 class FinalModel(ipyw.VBox):
     def __init__(self, trained_model: TrainedModel, *args, **kwargs):

@@ -5,8 +5,8 @@ from ipylab import JupyterFrontEnd, Panel
 
 import traitlets as trt
 import ipywidgets as ipyw
-from utils import TrainedModel, HiddenLayers
-from analysis_export import FinalModel
+from ..utils import TrainedModel, HiddenLayers
+from ..analysis_export import FinalModel
 from .model_generator import ModelGenerator
 
 class NeuralNetwork(ModelGenerator):

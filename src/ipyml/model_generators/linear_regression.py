@@ -8,8 +8,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import statsmodels.formula.api as sm
 
-from utils import TrainedModel
-from analysis_export import FinalModel
+from ..utils import TrainedModel
+from ..analysis_export import FinalModel
 from .model_generator import ModelGenerator
 
 
