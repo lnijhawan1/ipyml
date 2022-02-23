@@ -1,9 +1,10 @@
-from utils import TrainedModel, RegressionConfiguration
-from analysis_export import FinalModel
 import ipywidgets as ipyw
 import traitlets as trt
-from sklearn.model_selection import train_test_split
 from ipylab import JupyterFrontEnd, Panel
+from sklearn.model_selection import train_test_split
+
+from ..analysis_export import FinalModel
+from ..utils import RegressionConfiguration
 
 
 class ModelGenerator(ipyw.VBox):
@@ -23,32 +24,31 @@ class ModelGenerator(ipyw.VBox):
         self.run_button.on_click(self.create_model)
 
     def create_model(self, *_):
-        '''
+        """
         Function to create the machine learning models. Will be implemented in the subclasses.
-        '''
+        """
         raise NotImplementedError
 
     @trt.default("values")
     def _make_values_dict():
-        '''
+        """
         Function to update the values. These will change from class to class so implemented in the subclass.
-        '''
+        """
         raise NotImplementedError
 
     def _update_values(self, *_):
         self.values = self._make_values_dict()
 
-    
     def _prepare_data(self):
-        '''
+        """
         This is a universal method that will get the data in the right shape for each algorithm.
 
         Returns the training and testing data needed.
-        '''
+        """
         dataframe = self.regression_settings.dataframe
         inputs = self.regression_settings.inputs
         target = self.regression_settings.target
-        
+
         X = dataframe[inputs + [target]]
 
         if self.regression_settings.validation_feature is None:
@@ -59,9 +59,9 @@ class ModelGenerator(ipyw.VBox):
             return
 
     def launch_export_viz(self, trained_model, name):
-        '''
+        """
         Universal function to launch the finalized models.
-        '''
+        """
         # create model and pop out pane
         final = FinalModel(trained_model=trained_model)
         self._trained_models.append(final)
@@ -69,5 +69,5 @@ class ModelGenerator(ipyw.VBox):
         panel.title.label = name
         app = JupyterFrontEnd()
         app.shell.add(panel, "main", {"mode": "split-left"})
-        
+
         self.run_button.disabled = False
