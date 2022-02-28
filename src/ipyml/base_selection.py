@@ -230,14 +230,14 @@ class RegressionBase(ipyw.VBox):
         with self.hold_trait_notifications():
             for dropdown in dropdowns:
                 if dropdown == self.target_select:
-                    dropdown.options = valid_target_values
+                    dropdown.options = sorted(valid_target_values)
                     if target_value in valid_target_values:
                         dropdown.value = target_value
                     else:
                         dropdown.value = valid_target_values[0]
 
                 if dropdown == self.inputs_select:
-                    dropdown.options = valid_input_values
+                    dropdown.options = sorted(valid_input_values)
                     new_values = []
                     for col in input_values:
                         if col in dropdown.options:
@@ -246,10 +246,12 @@ class RegressionBase(ipyw.VBox):
 
                 if dropdown == self.validation_column_select:
                     if validation_value is None:
-                        dropdown.options = [None] + list(valid_validation_values)
+                        dropdown.options = [None] + sorted(
+                            list(valid_validation_values)
+                        )
                         dropdown.value = None
                     else:
-                        dropdown.options = valid_validation_values
+                        dropdown.options = sorted(valid_validation_values)
                         if validation_value in valid_validation_values:
                             dropdown.value = validation_value
                         else:
