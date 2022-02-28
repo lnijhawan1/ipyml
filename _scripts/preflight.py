@@ -17,7 +17,7 @@ from . import project as P
 BAD_PATH_RE = r"[^a-zA-Z\d_\-\.\\/]"
 ROOT_RECOMMEND = "c:\\git\\ipyml" if P.WIN else os.path.expanduser("~/git/ipyml")
 MC3_RECOMMEND = "c:\\mc3" if P.WIN else os.path.expanduser("~/mc3")
-ARBITRARY_PATH_LENGTH = 32 if P.WIN else 64
+ARBITRARY_PATH_LENGTH = 56 if P.WIN else 64
 NOT_DEFINED = "!NOT DEFINED!"
 DEFAULT_KERNEL_NAME = "python3"
 

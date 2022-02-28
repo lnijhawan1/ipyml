@@ -59,16 +59,18 @@ class RegressionBase(ipyw.VBox):
 
         # keep our generated models for reference
         self._generated_models = []
-        columns = list(self.dataframe.columns)
+        columns = sorted(list(self.dataframe.columns))
 
         # create the dropdowns that power the widget
         self.target_select = ipyw.Dropdown(options=columns)
         self.inputs_select = ipyw.SelectMultiple(options=columns)
         self.validation_column_select = ipyw.Dropdown(
-            options=columns + [None], value=None
+            options=columns + [None],
+            value=None,
+            disabled=True,
         )
         self.validation_column_select.observe(self._update_column_set, "value")
-        self.validation_column_value = ipyw.Dropdown()
+        self.validation_column_value = ipyw.Dropdown(disabled=True)
 
         selectors = [
             self.target_select,
@@ -91,6 +93,7 @@ class RegressionBase(ipyw.VBox):
             return
         all_values = set(list(self.dataframe[column]))
         self.validation_column_value.options = all_values
+        self.validation_column_value.disabled = False
 
     def view_dataframe(self, *_):
         """
@@ -227,14 +230,14 @@ class RegressionBase(ipyw.VBox):
         with self.hold_trait_notifications():
             for dropdown in dropdowns:
                 if dropdown == self.target_select:
-                    dropdown.options = valid_target_values
+                    dropdown.options = sorted(valid_target_values)
                     if target_value in valid_target_values:
                         dropdown.value = target_value
                     else:
                         dropdown.value = valid_target_values[0]
 
                 if dropdown == self.inputs_select:
-                    dropdown.options = valid_input_values
+                    dropdown.options = sorted(valid_input_values)
                     new_values = []
                     for col in input_values:
                         if col in dropdown.options:
@@ -243,10 +246,12 @@ class RegressionBase(ipyw.VBox):
 
                 if dropdown == self.validation_column_select:
                     if validation_value is None:
-                        dropdown.options = [None] + list(valid_validation_values)
+                        dropdown.options = [None] + sorted(
+                            list(valid_validation_values)
+                        )
                         dropdown.value = None
                     else:
-                        dropdown.options = valid_validation_values
+                        dropdown.options = sorted(valid_validation_values)
                         if validation_value in valid_validation_values:
                             dropdown.value = validation_value
                         else:

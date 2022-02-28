@@ -141,6 +141,13 @@ def task_setup():
         P.OK_PIP_INSTALL,
     )
 
+    yield dict(
+        name="js",
+        file_dep=[P.YARN_LOCK, P.PACKAGE, P.OK_ENV["develop"]],
+        actions=[[*P.APR_DEV, *P.JLPM_INSTALL]],
+        targets=[P.YARN_INTEGRITY],
+    )
+
 
 # def task_build():
 #     """build packages"""
@@ -195,7 +202,7 @@ def task_test():
     def _nb_test(nb):
         def _test():
             env = dict(os.environ)
-            # env.update(IPYML_TESTING="true") Only needed if automating notebook execution
+            env.update(IPYML_TESTING="true")
             args = [
                 *P.APR_DEV,
                 "jupyter",
@@ -280,7 +287,7 @@ def task_lint():
     yield _ok(
         dict(
             name="prettier",
-            file_dep=[*P.ALL_PRETTIER, P.OK_ENV["qa"]],  # TODO Add P.YARN_INTEGRITY
+            file_dep=[*P.ALL_PRETTIER, P.OK_ENV["qa"], P.YARN_INTEGRITY],
             actions=[[*P.APR_QA, *P.JLPM, "--silent", "lint"]],
         ),
         P.OK_PRETTIER,
@@ -290,7 +297,7 @@ def task_lint():
         return _ok(
             dict(
                 name=f"""nblint:{nb.stem}""",
-                file_dep=[P.OK_ENV["qa"], nb],  # TODO Add P.YARN_INTEGRITY
+                file_dep=[P.OK_ENV["qa"], nb, P.YARN_INTEGRITY],
                 actions=[
                     LongRunning([*P.APR_QA, *P.PYM, "_scripts.nblint", nb], shell=False)
                 ],

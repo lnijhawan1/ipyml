@@ -27,10 +27,10 @@ ROOT = SCRIPTS.parent
 # top-level stuff
 SETUP_PY = ROOT / "setup.py"
 SETUP_CFG = ROOT / "setup.cfg"
-# NODE_MODULES = ROOT / "node_modules"
-# PACKAGE = ROOT / "package.json"
-# YARN_INTEGRITY = NODE_MODULES / ".yarn-integrity"
-# YARN_LOCK = ROOT / "yarn.lock"
+NODE_MODULES = ROOT / "node_modules"
+PACKAGE = ROOT / "package.json"
+YARN_INTEGRITY = NODE_MODULES / ".yarn-integrity"
+YARN_LOCK = ROOT / "yarn.lock"
 CI = ROOT / ".github"
 DODO = ROOT / "dodo.py"
 BUILD = ROOT / "build"
@@ -107,7 +107,8 @@ ALL_PY_SRC = [*PY_SRC.rglob("*.py")]
 ALL_PY = [DODO, *ALL_PY_SRC, *EXAMPLE_PY, *SCRIPTS.rglob("*.py")]
 ALL_YML = [
     *ROOT.glob("*.yml"),
-]  # *CI.rglob("*.yml")]
+    # *CI.rglob("*.yml")]
+]
 ALL_JSON = [*ROOT.glob("*.json")]
 ALL_MD = [*ROOT.glob("*.md"), *EXAMPLE_DATA.glob("*.md")]
 ALL_PRETTIER = [*ALL_YML, *ALL_JSON, *ALL_MD]
