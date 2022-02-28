@@ -59,16 +59,18 @@ class RegressionBase(ipyw.VBox):
 
         # keep our generated models for reference
         self._generated_models = []
-        columns = list(self.dataframe.columns)
+        columns = sorted(list(self.dataframe.columns))
 
         # create the dropdowns that power the widget
         self.target_select = ipyw.Dropdown(options=columns)
         self.inputs_select = ipyw.SelectMultiple(options=columns)
         self.validation_column_select = ipyw.Dropdown(
-            options=columns + [None], value=None
+            options=columns + [None],
+            value=None,
+            disabled=True,
         )
         self.validation_column_select.observe(self._update_column_set, "value")
-        self.validation_column_value = ipyw.Dropdown()
+        self.validation_column_value = ipyw.Dropdown(disabled=True)
 
         selectors = [
             self.target_select,
@@ -91,6 +93,7 @@ class RegressionBase(ipyw.VBox):
             return
         all_values = set(list(self.dataframe[column]))
         self.validation_column_value.options = all_values
+        self.validation_column_value.disabled = False
 
     def view_dataframe(self, *_):
         """
