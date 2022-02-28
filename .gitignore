@@ -16,7 +16,8 @@ build/
 dist/
 envs/
 _scripts/local/
-examples/**/*.html
+notebooks/**/*.html
+notebooks/**/*.json
 lib/
 node_modules/
 Untitled.*

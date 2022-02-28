@@ -195,7 +195,7 @@ def task_test():
     def _nb_test(nb):
         def _test():
             env = dict(os.environ)
-            # env.update(IPYML_TESTING="true") Only needed if automating notebook execution
+            env.update(IPYML_TESTING="true")
             args = [
                 *P.APR_DEV,
                 "jupyter",

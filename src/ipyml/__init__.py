@@ -1,3 +1,3 @@
 from .base_selection import RegressionBase
 
-__all__ = ['RegressionBase']
+__all__ = ["RegressionBase"]

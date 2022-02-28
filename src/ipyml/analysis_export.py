@@ -7,6 +7,7 @@ from sklearn_export import Export
 
 from .utils import TrainedModel
 
+
 class FinalModel(ipyw.VBox):
     def __init__(self, trained_model: TrainedModel, *args, **kwargs):
         super().__init__(*args, **kwargs)
