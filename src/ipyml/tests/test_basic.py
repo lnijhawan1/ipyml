@@ -1,3 +1,5 @@
+import pandas as pd
+import statsmodels.formula.api as sm
 from sklearn.datasets import load_diabetes
 from sklearn.linear_model import LinearRegression
 from sklearn.neural_network import MLPRegressor
@@ -18,6 +20,7 @@ def test_import_regression_base():
     regr = RegressionBase(diabetes)
     neural_network(regr)
     linear_regression(regr)
+    ols_regression(regr)
 
 
 def neural_network(regr_base: RegressionBase):
@@ -114,3 +117,39 @@ def linear_regression(regr_base: RegressionBase):
     our_predictions = reg.predict([[0 for _ in range(reg.n_features_in_)]])
 
     assert sk_predictions[0] == our_predictions[0]
+
+
+def ols_regression(regr_base: RegressionBase):
+    setup = regr_base
+    setup.regression_configuration = RegressionConfiguration(
+        dataframe=regr_base.dataframe,
+        inputs=["bp", "s1", "s2", "s3", "s4", "s5", "s6", "bmi", "age", "sex"],
+        target="target",
+        validation_feature=None,
+        validation_value=None,
+    )
+
+    lr = SMOLS(regression_settings=setup.regression_configuration)
+    lr.formula_input.value = "bp + sex + bmi + age"
+    lr.l1_weight.value = 0.7
+
+    X_train, X_test = lr._prepare_data()
+    target = lr.regression_settings.target
+    scaler = StandardScaler()
+    inputs = X_train.drop([target], axis=1)
+    Xz_train = scaler.fit_transform(inputs)
+    Xz_train = pd.DataFrame(Xz_train, index=inputs.index, columns=inputs.columns)
+    Xz_train["target"] = X_train["target"]
+
+    # our model
+    formula = f"{target}~" + lr.values["Formula"]
+    reg = sm.ols(formula, data=Xz_train)
+    reg = reg.fit_regularized(L1_wt=lr.values["L1 Weight"])
+
+    # "correct" model
+    correct_model = sm.ols("target ~ bp+sex+bmi+age", data=Xz_train).fit_regularized(
+        L1_wt=0.7
+    )
+
+    # assert we have the same parameters
+    assert correct_model.params.all() == reg.params.all()
